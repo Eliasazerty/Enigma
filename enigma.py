@@ -6,22 +6,20 @@ class Enigma:
         try:
             with open(settings_file) as file:
                 data = json_load(file)
-                #print(data["RI"])
         except:
             print(f"Error while trying to read the setting file\nGiven file path: {settings_file}")
-        # "qzertyuiopasdfghjklmwxcvbn" -> 'a' = 1 => "q"
-        # "zertyuiopasdfghjklmwxcvbnq"
+        # "qzertyuiopasdfghjklmwxcvbn": 'a'=1  ==> ciphered as a "q" (first position in this alphabet)
+        # "zertyuiopasdfghjklmwxcvbnq": represent the rotor's alphabet at time+1
 
-        self.alpha = [list("".join(data[data["R_used"][0]]).lower()), 1] # alphabet, number printed on the top of the rotor
+        self.alpha = [list("".join(data[data["R_used"][0]]).lower()), 1] # [alphabet, number printed on the top of the rotor]
         self.beta = [list("".join(data[data["R_used"][1]]).lower()), 1]
         self.gama = [list("".join(data[data["R_used"][2]]).lower()), 1]
 
-        # {'a': 'b', 'g':'f', ...}
         self.reflector = data[data["Rf_used"]].lower()
 
         temp_steckerbrett = data["Steckerbrett"] # shortcut
         self.steckerbrett = [temp_steckerbrett, {v:k for k,v in temp_steckerbrett.items()}]
-        # self.steckerbrett -> [dictionary, inverted_dictionary] 
+        # self.steckerbrett -> [dictionary, inverted_dictionary]
         
 
         self.turn_beta = False
@@ -29,7 +27,7 @@ class Enigma:
 
         self.alphabet = alphabet
     
-    def set_position(self, a,b,c): # premier devient dernier
+    def set_position(self, a,b,c):
         if a > 1:
             self.alpha[0] = self.alpha[0][a-1:]+self.alpha[0][:a-1]
         if b > 1:
@@ -76,26 +74,11 @@ class Enigma:
             beta_letter2 = chr(self.beta[0].index(gama_letter2)+97)
             alpha_letter2 = chr(self.alpha[0].index(beta_letter2)+97)
 
-            #print(f"Départ: [{letter}]")
-            #print(f"\tAlpha({self.alpha[1]}) => {letter} -> {alpha_letter1}")
-            #print(f"\tBeta({self.beta[1]}) => {alpha_letter1} -> {beta_letter1}")
-            #print(f"\tGama({self.gama[1]}) => {beta_letter1} -> {gama_letter1}")
-#
-            #print(f"\t\tReflecteur => {gama_letter1} -> {reflector_letter}")#cfagibdmeonuhkjrtpvqmszyxw
-#
-            #print(f"\tGama({self.gama[1]}) => {reflector_letter} -> {gama_letter2}")
-            #print(f"\tBeta({self.beta[1]}) => {gama_letter2} -> {beta_letter2}")
-            #print(f"\tAlpha({self.alpha[1]}) => {beta_letter2} -> {alpha_letter2}")
-
             final_letter = self.crypt_steckerbrett(alpha_letter2)
 
 
-
             msg += final_letter
-
         return msg
-
-
     
     def get_number(self, letter):
         return ord(letter)-97
@@ -106,13 +89,11 @@ class Enigma:
     
     def crypt_steckerbrett(self, letter):
         if letter in self.steckerbrett[0]:
-                print(f"lettre \"{letter}\" est dans le steckerbrett {self.steckerbrett[0][letter]}")
                 return self.steckerbrett[0][letter]
         elif letter in self.steckerbrett[1]:
-            print(f"lettre \"{letter}\" est dans le steckerbrett inversé {self.steckerbrett[1][letter]}")
             return self.steckerbrett[1][letter]
         return letter
         
 machine = Enigma("settings.json", ascii_lowercase)
 machine.set_position(1,1,1)
-print(machine.code("kyxstkm, db wjth kacvz"))
+print(machine.code("This is a message"))

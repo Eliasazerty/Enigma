@@ -12,9 +12,5 @@
         "e": "f"
     },
     "R_used": ["RI", "RII", "RV"],
-    "Rf_used": "RfA",
-    "R_test": "abcdefghijklmnopqrstuvwxyz",
-    "Rf_test": "cfagibdmeonuhkjrtpvqmszyxw",
-    "R_used_test": ["R_test", "R_test", "R_test"],
-    "Rf_used_test": "Rf_test"
+    "Rf_used": "RfA"
 }
